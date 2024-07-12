@@ -2,6 +2,7 @@ import pandas as pd
 import subprocess
 import tempfile
 import os
+from eggnog_to_gsc import process_eggnog
 
 def select_files():
     '''
