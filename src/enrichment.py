@@ -16,7 +16,15 @@ def select_files():
     
     '''
 
-    # Select the candidate file
+    #if there are files in data folder
+    if os.path.exists('data'):
+        #get the files in the data folder
+        files = os.listdir('data')
+        if len(files) == 0:
+            print('No files in the data folder')
+            return None, None, None
+
+
 
 
 def enrichment_analysis(candidates, universe, background):
