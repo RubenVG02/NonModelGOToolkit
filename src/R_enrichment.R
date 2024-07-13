@@ -22,12 +22,13 @@ load_required_libraries <- function() {
 
 if (!require("optparse")) install.packages("optparse", repos="http://R-Forge.R-project.org")
 library(optparse)
+
 option_list <- list(
   make_option(c("--candidates_ids"), type = "character", default = NULL, help = "Path to the genes file. This file should contain gene identifiers in text format."),
   make_option(c("--universe_ids"), type = "character", default = NULL, help = "Path to the universe file. This file should contain universe gene identifiers in text format."),
   make_option(c("--output_folder"), type = "character", default = NULL, help = "Path to the output folder where results will be saved."),
   make_option(c("--annotation_df"), type = "character", default = NULL, help = "Path to the GSC (Gene Set Collection) file. This file should contain GO terms and gene identifiers, obtained from the transcriptome annotation."),
-  make_option(c("--pvalue_cutoff"), type = "numeric", default = 0.01, help = "P-value cutoff for the analysis. Default is 0.01."),
+  make_option(c("--pvalue_cutoff"), type = "character", default = "0.01", help = "P-value cutoff for the analysis. Default is 0.01. Multiple cutoffs can be provided separated by commas."),
   make_option(c("--category_size"), type = "numeric", default = 5, help = "Category size for the summary. Default is 5."),
   make_option(c("--help"), action = "store_true", default = FALSE, help = "Show this help message and exit.")
 )
@@ -80,18 +81,20 @@ process_files <- function(candidates_ids, universe_ids, output_folder, gsc, pval
       
       combined_results <- bind_rows(results_list, .id = "Ontology")
       
-      if (any(sapply(results_list, nrow) > 0)) {
+      if (nrow(combined_results) > 0) {
         dir.create(file.path(output_folder, output_name), showWarnings = FALSE, recursive = TRUE)
         output_folder_final <- file.path(output_folder, output_name)
         combined_output_filename <- paste0(output_name, "_", pvalue_cutoff, ".txt")
         write.table(combined_results, file.path(output_folder, output_name, combined_output_filename), sep = "\t", row.names = FALSE, quote = FALSE)
+        
         combined_data <- read.table(file.path(output_folder, output_name, combined_output_filename), header = TRUE, sep = "\t", stringsAsFactors = FALSE)
         filtered_ids <- na.omit(c(combined_data$GOBPID, combined_data$GOCCID, combined_data$GOMFID))
         pvalues <- combined_data$Pvalue
         output_df <- data.frame(GOs = filtered_ids, Pvalues = pvalues)
         output_txt_filename <- paste0(output_name, "_", pvalue_cutoff, "_IDs_Pvalues.txt")
         write.table(output_df, file.path(output_folder, output_name, output_txt_filename), sep = "\t", row.names = FALSE, quote = FALSE)
-        plot <- ggplot(data = NULL, aes(x = pvalues)) +
+        
+        plot <- ggplot(data = combined_data, aes(x = Pvalue)) +
           geom_histogram(binwidth = as.numeric(pvalue_cutoff), fill = "skyblue", color = "black") +
           labs(title = paste("Histogram of p-values (pvalue =", pvalue_cutoff, ")", sep = " "), x = "P-value", y = "Frequency") +
           theme_minimal()
@@ -116,4 +119,5 @@ goAllFrame <- GOAllFrame(goFrame)
 gsc <- GeneSetCollection(goAllFrame, setType = GOCollection())
 
 pvalue_cutoffs <- strsplit(opt$pvalue_cutoff, ",")[[1]]
+pvalue_cutoffs <- as.numeric(pvalue_cutoffs) # Convert to numeric
 process_files(opt$candidates_ids, opt$universe_ids, opt$output_folder, gsc, pvalue_cutoffs, opt$category_size)
