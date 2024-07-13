@@ -31,7 +31,7 @@ def select_files():
         if len(files) != 0:
             candidate_files = glob.glob('data/*candidates.txt')
             universe_files = glob.glob('data/*universe.txt')
-            annotation_files = glob.glob('data/*.annotation')
+            annotation_files = glob.glob('data/*.annotation*')
 
             if candidate_files and universe_files and annotation_files:
                 candidates = [line.strip() for line in open(candidate_files[0])]
