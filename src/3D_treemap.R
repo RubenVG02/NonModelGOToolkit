@@ -1,6 +1,25 @@
+# Function to check and install missing packages
+check_and_install_packages <- function(packages) {
+  for (package in packages) {
+    if (!require(package, character.only = TRUE)) {
+      install.packages(package, dependencies = TRUE)
+      library(package, character.only = TRUE)
+    }
+  }
+}
+
+# List of required packages
+required_packages <- c("treemap", "d3treeR", "xml2", "htmltools", "tools")
+
+# Check and install packages
+check_and_install_packages(required_packages)
+
+# Load the libraries
 library(treemap)
 library(d3treeR)
 library(xml2)
+library(htmltools)
+library(tools)
 
 generate_treemap <- function(file_path) {
   print(paste("Processing file:", file_path))
@@ -96,6 +115,8 @@ modify_html_style <- function(html_file_path) {
   xml2::write_html(doc, html_file_path)
 }
 
-file_list <- list.files(path = "/Users/rubenvg/Desktop/GO_REFERENCIA/", pattern = "_TreeMap\\.tsv$", recursive = TRUE, full.names = TRUE)
+print(file_path("src/3D_treemap.R"))
+path_dir <- file_path("src/3D_treemap.R")
+file_list <- list.files(path = path_dir, pattern = "_TreeMap\\.tsv$", recursive = TRUE, full.names = TRUE)
 
 lapply(file_list, generate_treemap)
