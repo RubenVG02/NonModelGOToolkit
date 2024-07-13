@@ -24,7 +24,7 @@ library(jsonlite)
 
 generate_treemap <- function(file_path) {
   print(paste("Processing file:", file_path))
-  title_name <- paste(strsplit(file_path, "_")[[1]][1:3], collapse="_")
+  title_name <- paste(strsplit(basename(file_path), "_")[[1]][1:3], collapse="_")
   
   data <- tryCatch(
     read.table(file_path, header = TRUE, stringsAsFactors = FALSE, sep = "\t", skip = 4),
@@ -33,12 +33,12 @@ generate_treemap <- function(file_path) {
       return(NULL)
     }
   ) 
-  if(is.null(data)) {
+  if (is.null(data)) {
     return(NULL)
   }
   data$Value <- abs(data$Value)
   
-  revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative")
+  revigo.names <- c("term_ID", "description", "frequency", "value", "uniqueness", "dispensability", "representative")
   
   revigo.data <- data[data[, ncol(data)] != "null", ]
   stuff <- data.frame(revigo.data)
@@ -49,11 +49,11 @@ generate_treemap <- function(file_path) {
   stuff$uniqueness <- as.numeric(as.character(stuff$uniqueness))
   stuff$dispensability <- as.numeric(as.character(stuff$dispensability))
   
-  file_name <- basename(tools::file_path_sans_ext(file_path))
+  file_name <- tools::file_path_sans_ext(basename(file_path))
   title_name <- paste(strsplit(file_name, "_")[[1]][1:3], collapse="_")
   ns <- (strsplit(file_name, "_")[[1]])[6]
   
-  if(nrow(stuff) > 0) {
+  if (nrow(stuff) > 0) {
     treemap_plot <- treemap(
       stuff,
       index = c("representative", "description"),
@@ -85,7 +85,7 @@ generate_treemap <- function(file_path) {
 }
 
 modify_html_style <- function(html_file_path) {
-  doc <- read_html(html_file_path)
+  doc <- xml2::read_html(html_file_path)
   
   nodes <- xml2::xml_find_all(doc, ".//div[contains(@class, 'd3tree')]")
   for (node in nodes) {
@@ -116,10 +116,10 @@ modify_html_style <- function(html_file_path) {
   xml2::write_html(doc, html_file_path)
 }
 
-json_data <- fromJSON("data.json")
+json_data <- jsonlite::fromJSON("params.json")
 out_folder <- json_data$output_folder
 
-path_dir <- getwd() + out_folder
+path_dir <- file.path(getwd(), out_folder)
 
 file_list <- list.files(path = path_dir, pattern = "_TreeMap\\.tsv$", recursive = TRUE, full.names = TRUE)
 

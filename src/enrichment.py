@@ -29,8 +29,8 @@ def select_files():
         # Get the files in the data folder
         files = os.listdir('data')
         if len(files) != 0:
-            candidate_files = glob.glob('data/*_candidates.txt')
-            universe_files = glob.glob('data/*_universe.txt')
+            candidate_files = glob.glob('data/*candidates.txt')
+            universe_files = glob.glob('data/*universe.txt')
             annotation_files = glob.glob('data/*.annotation')
 
             if candidate_files and universe_files and annotation_files:
@@ -81,12 +81,14 @@ def enrichment_analysis():
     candidates, universe, background = select_files()
 
     parameters = {}
-    with open('params.txt', 'r') as file:
-        for line in file:
-            key, value = line.strip().split('=', 1)
-            parameters[key] = value
+    with open('params.json', 'r') as file:
+        pass
 
-    cmd = [
+    os.system("Rscript src/R_enrichment.R --candidates_ids data/aa.candidates.txt --universe_ids data/aa.universe.txt --output_folder output --annotation_df data/background.txt --pvalue_cutoff 0.01 --category_size 5")
+
+        
+
+    '''  cmd = [
         "Rscript", "src/R_enrichment.R",
         "--candidates_ids", "data/aa_candidates.txt",
         "--universe_ids", "data/aa_universe.txt",
@@ -105,5 +107,5 @@ def enrichment_analysis():
         print(f"Error al ejecutar el script de R: {e}")
         print("Salida estándar:", e.stdout)
         print("Errores:", e.stderr)
-
+'''
 enrichment_analysis()
