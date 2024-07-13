@@ -1,12 +1,10 @@
-import pandas as pd
 import subprocess
 import os
+import pandas as pd
 from eggnog_to_gsc import process_eggnog
-import glob
 from tkinter import Tk, filedialog
 import shutil
-import rpy2.robjects as robjects
-
+import glob
 
 def select_files():
     '''
@@ -65,8 +63,6 @@ def select_files():
 
     return candidates, universe, background
 
-
-
 def enrichment_analysis():
     '''
     Function to perform the enrichment analysis
@@ -80,41 +76,34 @@ def enrichment_analysis():
     Returns:
 
     - results: DataFrame with the results of the enrichment analysis
-
     '''
-
-
+    # Assuming select_files() returns the file paths for candidates, universe, and background
     candidates, universe, background = select_files()
 
     parameters = {}
-
     with open('params.txt', 'r') as file:
         for line in file:
             key, value = line.strip().split('=', 1)
             parameters[key] = value
-    
-    params_script= {"--candidates_ids": "data\aa_candidates.txt",
-                    "--universe_ids": "data\aa_universe.txt",
-                    "--output_folder": "output",
-                    "--annotation_df": "data\background.txt",
-                    "--pvalue_cutoff": 0.01,
-                    "--category_size": 5}
-    
-    cmd = ["Rscript", "src/enrichment.R"]
 
-    for key, value in params_script.items():
-        cmd.extend([key, value])
-
+    cmd = [
+        "Rscript", "src/R_enrichment.R",
+        "--candidates_ids", "data/aa_candidates.txt",
+        "--universe_ids", "data/aa_universe.txt",
+        "--output_folder", "output",
+        "--annotation_df", "data/background.txt",
+        "--pvalue_cutoff", "0.01",
+        "--category_size", "5"
+    ]
 
     try:
-        subprocess.run(cmd, check=True)
-        
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        print("Script ejecutado con éxito.")
+        print("Salida estándar:", result.stdout)
+        print("Errores:", result.stderr)
     except subprocess.CalledProcessError as e:
-        print(e)
-        return None
-    
-
+        print(f"Error al ejecutar el script de R: {e}")
+        print("Salida estándar:", e.stdout)
+        print("Errores:", e.stderr)
 
 enrichment_analysis()
-
-
