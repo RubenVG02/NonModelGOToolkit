@@ -93,15 +93,21 @@ def enrichment_analysis():
             key, value = line.strip().split('=', 1)
             parameters[key] = value
     
+    params_script= {"--candidates_ids": candidates,
+                    "--universe_ids": universe,
+                    "--output_folder": "output",
+                    "--annotation_df": background,
+                    "--pvalue_cutoff": 0.01,
+                    "--category_size": 5}
+    cmd = ["Rscript", "src/enrichment.R"]
+
+    for key, value in params_script.items():
+        cmd.extend([key, value])
+
+
     try:
-        subprocess.call(['Rscript', 'R_enrichment.R', 
-                         "--candidates_ids", candidates,
-                         "--universe_ids", universe,
-                         "--output_folder", parameters['output_folder'],
-                         "--annotation_df", background,
-                         "--pvalue_cutoff", parameters['pvalue'],
-                         "--category_size", parameters['category_size']], 
-                         capture_output=True, text=True)
+        subprocess.run(cmd, check=True)
+        
     except subprocess.CalledProcessError as e:
         print(e)
         return None
