@@ -99,6 +99,7 @@ def enrichment_analysis():
                     "--annotation_df": "data\background.txt",
                     "--pvalue_cutoff": 0.01,
                     "--category_size": 5}
+    
     cmd = ["Rscript", "src/enrichment.R"]
 
     for key, value in params_script.items():
