@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 def process_file(file_path, ns):
     with open(file_path, 'r') as file:
         userData = file.read()
+    print("Processing file", file_path, "for namespace", ns)
 
     namespace_names = {1: 'BP', 2: 'CC', 3: 'MF'}
 
@@ -152,24 +153,26 @@ def make_request(file_path):
 
 def main():
     
-    curr_dir = os.path.dirname(os.path.abspath(__file__)).split()
-    print(curr_dir)
+    curr_dir = os.path.dirname(os.path.abspath(__file__))
+    curr_dir = os.path.dirname(curr_dir)
 
     with open('params.json', 'r') as file:
         config = json.load(file)
 
     output_folder = config['output_folder']
 
-    output_folder = os.path.join(curr_dir, '..', output_folder)
-    print(output_folder)
+    output_folder = os.path.join(curr_dir, output_folder)
 
-    
+
     files_to_process = []
     for root, dirs, files in os.walk(output_folder):
         for file in files:
+
             if file.endswith('IDs_Pvalues.txt'):
                 file_path = os.path.join(root, file)
                 files_to_process.append(file_path)
+
+
 
     with ThreadPoolExecutor(max_workers=1) as executor:
         executor.map(make_request, files_to_process)
