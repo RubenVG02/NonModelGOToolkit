@@ -9,7 +9,7 @@ check_and_install_packages <- function(packages) {
 }
 
 # List of required packages
-required_packages <- c("treemap", "d3treeR", "xml2", "htmltools", "tools")
+required_packages <- c("treemap", "d3treeR", "xml2", "htmltools", "tools", "jsonlite")
 
 # Check and install packages
 check_and_install_packages(required_packages)
@@ -20,6 +20,7 @@ library(d3treeR)
 library(xml2)
 library(htmltools)
 library(tools)
+library(jsonlite)
 
 generate_treemap <- function(file_path) {
   print(paste("Processing file:", file_path))
@@ -115,8 +116,11 @@ modify_html_style <- function(html_file_path) {
   xml2::write_html(doc, html_file_path)
 }
 
-print(file_path("src/3D_treemap.R"))
-path_dir <- file_path("src/3D_treemap.R")
+json_data <- fromJSON("data.json")
+out_folder <- json_data$output_folder
+
+path_dir= getwd() + out_folder
+
 file_list <- list.files(path = path_dir, pattern = "_TreeMap\\.tsv$", recursive = TRUE, full.names = TRUE)
 
 lapply(file_list, generate_treemap)
