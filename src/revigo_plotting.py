@@ -6,22 +6,21 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import json
 import plotly.graph_objects as go
-import csv 
-from concurrent.futures import ThreadPoolExecutor
+import csv
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def process_file(file_path, ns):
     with open(file_path, 'r') as file:
         userData = file.read()
-    print("Processing file", file_path, "for namespace", ns)
+    print(f"Processing file {file_path} for namespace {ns}")
 
     namespace_names = {1: 'BP', 2: 'CC', 3: 'MF'}
-
+    
     payload = {'cutoff': '0.7', 'valueType': 'pvalue', 'speciesTaxon': '0', 'measure': 'SIMREL', 'goList': userData}
     r = requests.post("http://revigo.irb.hr/StartJob", data=payload)
     jobid = r.json()['jobid']
-    print("Job submitted with ID", jobid, "for namespace", namespace_names[ns])
+    print(f"Job submitted with ID {jobid} for namespace {namespace_names[ns]}")
 
     running = 1
     while running != 0:
@@ -35,7 +34,7 @@ def process_file(file_path, ns):
     r_Rscript = requests.get("http://revigo.irb.hr/QueryJob", params={'jobid': jobid, 'type': 'RTreeMap', 'namespace': ns})
 
     if "error" in r_table.text or "error" in r_scatterplot.text or "error" in r_jTreeMap.text:
-        print("Error occurred while fetching results for namespace", namespace_names[ns])
+        print(f"Error occurred while fetching results for namespace {namespace_names[ns]}")
         return
 
     output_folder = os.path.join(os.path.dirname(file_path), "results_revigo")
@@ -51,17 +50,17 @@ def process_file(file_path, ns):
     output_file_jTreeMap = os.path.join(output_folder, f"{file_name}_{namespace_name}_TreeMap.tsv")
     output_file_scatterplot = os.path.join(output_folder, f"{file_name}_{namespace_name}_scatterPlot.tsv")
     output_file_Rscript = os.path.join(output_folder, f"{file_name}_{namespace_name}_Rscript.R")
-    print(output_file_Rscript)
+    print(f"Generated file paths:\nTable: {output_file_table}\nTreeMap: {output_file_jTreeMap}\nScatterPlot: {output_file_scatterplot}\nRscript: {output_file_Rscript}")
 
     with open(output_file_table, 'w') as f:
         f.write(r_table.text)
-        print("Table results written to", output_file_table)
+        print(f"Table results written to {output_file_table}")
     with open(output_file_jTreeMap, 'w') as f:
         f.write(r_jTreeMap.text)    
-        print("jTreeMap results written to", output_file_jTreeMap)
+        print(f"jTreeMap results written to {output_file_jTreeMap}")
     with open(output_file_scatterplot, 'w') as f:
         f.write(r_scatterplot.text)
-        print("Scatterplot results written to", output_file_scatterplot)
+        print(f"Scatterplot results written to {output_file_scatterplot}")
     pdf_destination = os.path.join(output_folder, f"{file_name}_{namespace_name}_treemap.pdf")
     with open(output_file_Rscript, 'w') as f:
         script_content = r_Rscript.text.replace('pdf( file="revigo_treemap.pdf", width=16, height=9 )',
@@ -69,7 +68,7 @@ def process_file(file_path, ns):
         script_content = script_content.replace('title = "Revigo TreeMap"', f'title = "{file_name} {namespace_name} TreeMap"')
         script_content = script_content.replace ('position.legend = "none"', 'position.legend = "none", fontsize.labels = c(12,15), align.labels = list(c("left","top"),c("center","center")),')
         f.write(script_content)
-        print("Rscript results written to", output_file_Rscript)
+        print(f"Rscript results written to {output_file_Rscript}")
 
     os.system(f"Rscript {output_file_Rscript}")
     print("Treemap created and saved.")
@@ -147,12 +146,14 @@ def create_treemap_from_csv(csv_file, output_file):
     print("Treemap created and saved.")
 
 def make_request(file_path):
-    process_file(file_path, 1)
-    process_file(file_path, 2)
-    process_file(file_path, 3)
+    print(f"Starting processing for file: {file_path}")
+    # Procesar todos los namespaces en paralelo
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        futures = [executor.submit(process_file, file_path, ns) for ns in [1, 2, 3]]
+        for future in as_completed(futures):
+            future.result()  
 
 def main():
-    
     curr_dir = os.path.dirname(os.path.abspath(__file__))
     curr_dir = os.path.dirname(curr_dir)
 
@@ -160,22 +161,17 @@ def main():
         config = json.load(file)
 
     output_folder = config['output_folder']
-
     output_folder = os.path.join(curr_dir, output_folder)
-
 
     files_to_process = []
     for root, dirs, files in os.walk(output_folder):
         for file in files:
-
             if file.endswith('IDs_Pvalues.txt'):
                 file_path = os.path.join(root, file)
                 files_to_process.append(file_path)
 
-
-
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        executor.map(make_request, files_to_process)
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        [executor.submit(make_request, file_path) for file_path in files_to_process]
 
 if __name__ == "__main__":
     main()

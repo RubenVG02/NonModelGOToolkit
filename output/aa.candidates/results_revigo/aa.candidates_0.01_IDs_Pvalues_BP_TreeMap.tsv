@@ -1,0 +1,11 @@
+# WARNING - This exported Revigo data is only useful for the specific purpose of constructing a TreeMap visualization.
+# Do not use this table as a general list of non-redundant GO categories, as it sets an extremely permissive 
+# threshold to detect redundancies (c=0.10) and fill the 'representative' column, while normally c>=0.4 is recommended.
+# To export a reduced-redundancy set of GO terms, go to the Scatterplot or Table tab, and export from there.
+TermID	Name	Frequency	Value	Uniqueness	Dispensability	Representative
+"GO:0006541"	"glutamine metabolic process"	0.5478057552077248	-2.0402633649328616	0.9974942839782682	-0	null
+"GO:0006837"	"serotonin transport"	0.011793781697174727	-2.44481807453716	0.9493614506011157	-0	null
+"GO:0098810"	"neurotransmitter reuptake"	0.015015197094919214	-2.0057325859733868	0.9469200419680528	0.15388914	"serotonin transport"
+"GO:0040003"	"chitin-based cuticle development"	0.0024647401665986893	-12.843241351085448	1	0	null
+"GO:0051612"	"negative regulation of serotonin uptake"	0.0019717921332789512	-3.449089197711838	0.6905380225534299	-0	null
+"GO:0030195"	"negative regulation of blood coagulation"	0.018004926917003426	-2.2397585064712966	0.8729603901086869	0.29316457	"negative regulation of serotonin uptake"
