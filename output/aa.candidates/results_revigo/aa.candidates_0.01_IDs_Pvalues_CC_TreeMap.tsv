@@ -1,8 +1,0 @@
-# WARNING - This exported Revigo data is only useful for the specific purpose of constructing a TreeMap visualization.
-# Do not use this table as a general list of non-redundant GO categories, as it sets an extremely permissive 
-# threshold to detect redundancies (c=0.10) and fill the 'representative' column, while normally c>=0.4 is recommended.
-# To export a reduced-redundancy set of GO terms, go to the Scatterplot or Table tab, and export from there.
-TermID	Name	Frequency	Value	Uniqueness	Dispensability	Representative
-"GO:0005576"	"extracellular region"	3.8687535442060237	-16.755193729539524	0.9999014076008546	4.559E-05	null
-"GO:0005615"	"extracellular space"	2.07853535653464	-3.026119872679412	0.9999045873204266	5.301E-05	null
-"GO:0031012"	"extracellular matrix"	0.6517835565339344	-17.124563222093236	0.9999120063293542	0	null
