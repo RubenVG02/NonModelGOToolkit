@@ -151,16 +151,27 @@ def make_request(file_path):
     process_file(file_path, 3)
 
 def main():
-    input_folder = "output"
+    
+    curr_dir = os.path.dirname(os.path.abspath(__file__)).split()
+    print(curr_dir)
+
+    with open('params.json', 'r') as file:
+        config = json.load(file)
+
+    output_folder = config['output_folder']
+
+    output_folder = os.path.join(curr_dir, '..', output_folder)
+    print(output_folder)
+
     
     files_to_process = []
-    for root, dirs, files in os.walk(input_folder):
+    for root, dirs, files in os.walk(output_folder):
         for file in files:
             if file.endswith('IDs_Pvalues.txt'):
                 file_path = os.path.join(root, file)
                 files_to_process.append(file_path)
 
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         executor.map(make_request, files_to_process)
 
 if __name__ == "__main__":
