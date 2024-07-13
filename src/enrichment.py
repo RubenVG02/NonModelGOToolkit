@@ -5,6 +5,7 @@ from eggnog_to_gsc import process_eggnog
 import glob
 from tkinter import Tk, filedialog
 import shutil
+import rpy2.robjects as robjects
 
 
 def select_files():
@@ -66,7 +67,7 @@ def select_files():
 
 
 
-def enrichment_analysis(pvalue=0.05, category_size=5, output_dir='results'):
+def enrichment_analysis():
     '''
     Function to perform the enrichment analysis
 
@@ -91,14 +92,26 @@ def enrichment_analysis(pvalue=0.05, category_size=5, output_dir='results'):
         for line in file:
             key, value = line.strip().split('=', 1)
             parameters[key] = value
+    
+    print(parameters)
 
     command = [
     "Rscript", "src\R_enrichment.R",
     "--genes_ids", candidates,
     "--universe_ids", universe,
-    "--output_folder", parameters['output_folder'],
+    "--output_folder", "output",
     "--annotation_df", background,
-    "--pvalue_cutoff", parameters['pvalue'],
-    "--category_size", parameters['category_size'],
+    "--pvalue_cutoff", 0.01,
+    "--category_size", 5,
 ]
+    try:
+        subprocess.call(command, shell=True)
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return None
     
+
+
+enrichment_analysis()
+
+
