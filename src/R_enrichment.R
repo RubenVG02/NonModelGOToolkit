@@ -4,7 +4,7 @@ load_required_libraries <- function() {
   }
   library(BiocManager)
   
-  required_packages <- c("GOstats", "GSEABase", "qvalue", "ggplot2", "stringr")
+  required_packages <- c("dplyr","GOstats", "GSEABase", "qvalue", "ggplot2", "stringr")
   
   install_if_missing <- function(package) {
     if (!require(package, character.only = TRUE)) {
@@ -24,11 +24,11 @@ if (!require("optparse")) install.packages("optparse")
 library(optparse)
 
 option_list <- list(
-  make_option(c("--candidates_ids"), type = "character", default = "data/aa_candidates.txt", help = "Path to the genes file. This file should contain gene identifiers in text format."),
-  make_option(c("--universe_ids"), type = "character", default = "data/aa_universe.txt", help = "Path to the universe file. This file should contain universe gene identifiers in text format."),
+  make_option(c("--candidates_ids"), type = "character", default = "data/aa.candidates.txt", help = "Path to the genes file. This file should contain gene identifiers in text format."),
+  make_option(c("--universe_ids"), type = "character", default = "data/aa.universe.txt", help = "Path to the universe file. This file should contain universe gene identifiers in text format."),
   make_option(c("--output_folder"), type = "character", default = "output", help = "Path to the output folder where results will be saved."),
   make_option(c("--annotation_df"), type = "character", default = "data/background.txt", help = "Path to the annotation dataframe. This file must contain GO terms, evidence (e.g., IEA) and transcripts or genes IDs."),
-  make_option(c("--pvalue_cutoff"), type = "character", default = "0.01, 0.05, 0.1", help = "P-value cutoff for the analysis. Default is 0.01. Multiple cutoffs can be provided separated by commas."),
+  make_option(c("--pvalue_cutoff"), type = "character", default = "0.01", help = "P-value cutoff for the analysis. Default is 0.01. Multiple cutoffs can be provided separated by commas."),
   make_option(c("--category_size"), type = "numeric", default = 5, help = "Category size for the summary. Default is 5.")
 )
 
@@ -39,31 +39,37 @@ load_required_libraries()
 
 process_files <- function(candidates_ids, universe_ids, output_folder, gsc, pvalue_cutoff, category_size) {
   base_name <- basename(tools::file_path_sans_ext(candidates_ids))
-  genes <- readLines(candidates_ids)
+  print(base_name)
+  genes_file <- readLines(candidates_ids)
+  print(head(genes_file))
   universe <- readLines(universe_ids)
   universe <- unlist(strsplit(universe, "\n"))
   universe <- universe[universe != ""]
+  print(universe[1:10])
   output_name <- base_name
   
   tryCatch({
-    if (length(genes) > 0 && length(universe) > 0) {
+    if (length(genes_file) > 0 && length(universe) > 0) {
       results_list <- list()
       ontologies <- c("BP", "MF", "CC")
       
       for (ontology in ontologies) {
+        print("Extracting enriched terms...")
+        
         tryCatch({
           params <- GSEAGOHyperGParams(
             name = paste("My Custom GSEA based annot Params -", ontology),
             geneSetCollection = gsc,
-            geneIds = genes,
+            geneIds = genes_file,
             universeGeneIds = universe,
             ontology = ontology,
-            pvalueCutoff = as.numeric(pvalue_cutoff),
+            pvalueCutoff = 0.01,
             conditional = TRUE,
             testDirection = "over"
           )
           
           Over <- hyperGTest(params)
+          print(Over)
           results_list[[ontology]] <- summary(Over, categorySize = category_size)
         }, error = function(e) {
           cat("Error in summary for ontology", ontology, "\n")
@@ -111,5 +117,4 @@ goAllFrame <- GOAllFrame(goFrame)
 gsc <- GeneSetCollection(goAllFrame, setType = GOCollection())
 
 pvalue_cutoffs <- strsplit(opt$pvalue_cutoff, ",")[[1]]
-pvalue_cutoffs <- as.numeric(pvalue_cutoffs) # Convert to numeric
 process_files(opt$candidates_ids, opt$universe_ids, opt$output_folder, gsc, pvalue_cutoffs, opt$category_size)
