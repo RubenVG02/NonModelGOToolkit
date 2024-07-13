@@ -93,10 +93,10 @@ def enrichment_analysis():
             key, value = line.strip().split('=', 1)
             parameters[key] = value
     
-    params_script= {"--candidates_ids": candidates,
-                    "--universe_ids": universe,
+    params_script= {"--candidates_ids": "data\aa_candidates.txt",
+                    "--universe_ids": "data\aa_universe.txt",
                     "--output_folder": "output",
-                    "--annotation_df": background,
+                    "--annotation_df": "data\background.txt",
                     "--pvalue_cutoff": 0.01,
                     "--category_size": 5}
     cmd = ["Rscript", "src/enrichment.R"]
