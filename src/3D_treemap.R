@@ -119,7 +119,7 @@ modify_html_style <- function(html_file_path) {
 json_data <- fromJSON("data.json")
 out_folder <- json_data$output_folder
 
-path_dir= getwd() + out_folder
+path_dir <- getwd() + out_folder
 
 file_list <- list.files(path = path_dir, pattern = "_TreeMap\\.tsv$", recursive = TRUE, full.names = TRUE)
 
