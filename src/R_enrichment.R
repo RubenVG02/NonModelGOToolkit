@@ -28,7 +28,7 @@ option_list <- list(
   make_option(c("--universe_ids"), type = "character", default = "data/aa_universe.txt", help = "Path to the universe file. This file should contain universe gene identifiers in text format."),
   make_option(c("--output_folder"), type = "character", default = "output", help = "Path to the output folder where results will be saved."),
   make_option(c("--annotation_df"), type = "character", default = "data/background.txt", help = "Path to the annotation dataframe. This file must contain GO terms, evidence (e.g., IEA) and transcripts or genes IDs."),
-  make_option(c("--pvalue_cutoff"), type = "character", default = "0.01", help = "P-value cutoff for the analysis. Default is 0.01. Multiple cutoffs can be provided separated by commas."),
+  make_option(c("--pvalue_cutoff"), type = "character", default = "0.01, 0.05, 0.1", help = "P-value cutoff for the analysis. Default is 0.01. Multiple cutoffs can be provided separated by commas."),
   make_option(c("--category_size"), type = "numeric", default = 5, help = "Category size for the summary. Default is 5.")
 )
 

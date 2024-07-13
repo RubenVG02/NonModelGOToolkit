@@ -97,7 +97,7 @@ def enrichment_analysis():
     ]
 
     try:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        result = subprocess.run(cmd, text=True, check=True,shell=True)
         print("Script ejecutado con éxito.")
         print("Salida estándar:", result.stdout)
         print("Errores:", result.stderr)
