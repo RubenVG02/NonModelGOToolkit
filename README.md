@@ -20,6 +20,20 @@ This project provides an automated comprehensive pipeline for conducting Gene On
 
 All input files must be placed in their respective subfolders within the data folder. The universe and candidates files must have the same base name. Candidates files should be named with the extension `*.candidates.txt`, universe files with `*.universe.txt`, and eggNOG-mapper annotation files with `*.annotation*`.
 
+### Enrichment Procedure
+Once all files are created with the correct format, modify the parameters of the enrichment by using the `params.json` file. To proceed with the encrichment, use the following command:
+
+```bash
+python3 src/main.py
+```
+
+The pipeline includes:
+   - **GO enrichment of the candidate transcripts using Biological process (BP), Cellular Components (CC), and Molecular Functions (MF) ontologies**
+   - **Grouping the enriched terms form 3 ontologies using the ReViGo API, obtaining 2D scatterplots and treemaps**
+   - **3D representation of the enriched GO terms**
+
+Example outputs and data can be found in the `example` folder.
+
 
 ## Installation
 
@@ -58,11 +72,16 @@ pip install requirements.txt
 - 2D and 3D visualization of the results
 - Fast and easy to use
 
-
-
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## How to cite?
+
+```bash
+RubenVG02. (2024). *NonModelGOToolkit*. https://github.com/RubenVG02/NonModelGOToolkit
+```
+
 
 
 
