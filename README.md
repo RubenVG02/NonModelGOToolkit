@@ -39,17 +39,13 @@ Example outputs and data can be found in the `example` folder.
 
 Via Git Clone:
 ```bash
-
 git clone https://github.com/RubenVG02/NonModelGOToolkit.git
-
 ```
 
 Via Lastest Release:
 
 ```bash
-
 https://github.com/RubenVG02/NonModelGOToolkit/releases
-
 ```
 
 To use this project, you need to have Python 3.7 or higher installed. Then, you need to install the following libraries:
