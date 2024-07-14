@@ -82,7 +82,7 @@ def process_file(file_path, ns):
     os.system(f"Rscript {output_file_Rscript}")
     print("Treemap created and saved.")
 
-    create_individual_barplot(output_file_table, f'{graphic_name} {namespace_name} Bar Plot', os.path.join(graphics_folder, f"{file_name}_{namespace_name}_barplot.png"), colors[namespace_name])
+    create_individual_barplot(output_file_table, f'{graphic_name} {namespace_name} Bar Plot', os.path.join(output_folder, f"{file_name}_{namespace_name}_barplot.png"), colors[namespace_name])
 
     with open(output_file_scatterplot, 'r') as tsv_file:
         scatterplot_data = pd.read_csv(tsv_file, sep='\t')
@@ -183,7 +183,9 @@ def main():
     with ThreadPoolExecutor(max_workers=5) as executor:
         [executor.submit(make_request, file_path) for file_path in files_to_process]
 
-    create_combined_barplot(tables_paths, os.path.join(curr_dir, 'results_revigo'))
+    file_dir = os.path.dirname(os.path.abspath(file_path))
+
+    create_combined_barplot(tables_paths, os.path.join(file_dir, 'results_revigo'))
 
     print("All files processed.")
 

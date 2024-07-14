@@ -8,11 +8,19 @@ def wrap_labels(label, max_words=4):
         label = "\n".join([" ".join(words[i:i+max_words]) for i in range(0, len(words), max_words)])
     return label
 
-def create_individual_barplot(df, title, filename, color):
+def create_individual_barplot(file_path, title, filename, color):
+    # Leer el archivo desde el path
+    df = pd.read_csv(file_path, sep='\t')
+    
+    if not all(col in df.columns for col in ['Name', 'Value']):
+        raise ValueError(f"The file {file_path} does not contain the required columns.")
+    
     df['WrappedName'] = df['Name'].apply(wrap_labels)
     df_sorted = df.sort_values(by='Value', key=abs)
+    
     plt.figure(figsize=(14, 12))
     bars = plt.barh(df_sorted['WrappedName'], abs(df_sorted['Value']), color=color, height=0.6)
+    
     for bar in bars:
         width = bar.get_width()
         plt.text(width + 0.5 if width > 0 else width - 0.5, 
@@ -21,6 +29,7 @@ def create_individual_barplot(df, title, filename, color):
                  va='center', 
                  ha='right' if width > 0 else 'left', 
                  fontsize=8)
+    
     plt.xlabel('Value')
     plt.title(title)
     plt.yticks(fontsize=6)
@@ -30,8 +39,20 @@ def create_individual_barplot(df, title, filename, color):
     plt.savefig(filename)
     plt.close()
 
-def create_combined_barplot(dataframes, output_folder):
+
+def create_combined_barplot(file_paths_dict, output_folder):
     colors = {'BP': 'skyblue', 'MF': 'lightcoral', 'CC': 'lightgreen'}
+    
+    dataframes = {}
+    
+    # Leer los archivos y almacenarlos en un diccionario de DataFrames
+    for ontology, path in file_paths_dict.items():
+        df = pd.read_csv(path, sep='\t')
+        if not all(col in df.columns for col in ['Name', 'Value']):
+            raise ValueError(f"The file {path} does not contain the required columns.")
+        dataframes[ontology] = df[['Name', 'Value']]
+    
+    # Combinar los DataFrames y agregar una columna de Ontología
     combined_df = pd.concat([
         dataframes['BP'].assign(Ontology='BP'),
         dataframes['MF'].assign(Ontology='MF'),
@@ -47,6 +68,7 @@ def create_combined_barplot(dataframes, output_folder):
     plt.figure(figsize=(14, 12))
     bars = plt.barh(combined_df_sorted['WrappedName'], abs(combined_df_sorted['Value']),
                     color=combined_df_sorted['Ontology'].map(colors), height=0.6)
+    
     for bar in bars:
         width = bar.get_width()
         plt.text(width + 0.5 if width > 0 else width - 0.5, 
@@ -68,7 +90,7 @@ def create_combined_barplot(dataframes, output_folder):
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'combined_barplot.png'))
     plt.close()
-
+    
 def process_and_plot(bp_path, mf_path, cc_path, output_folder):
     os.makedirs(output_folder, exist_ok=True)
 
@@ -85,13 +107,6 @@ def process_and_plot(bp_path, mf_path, cc_path, output_folder):
         else:
             raise ValueError(f"The file {path} does not contain the required columns.")
 
-    # Create combined bar plot
     create_combined_barplot(dataframes, output_folder)
 
-# Example usage
-bp_path = 'examples/output/aa/aa.candidates/results_revigo/example_BP_table.tsv'
-mf_path = 'examples/output/aa/aa.candidates/results_revigo/example_MF_table.tsv'
-cc_path = 'examples/output/aa/aa.candidates/results_revigo/example_CC_table.tsv'
-output_folder = 'testo'
 
-process_and_plot(bp_path, mf_path, cc_path, output_folder)
