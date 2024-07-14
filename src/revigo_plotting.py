@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import csv
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from barplot_generator import create_individual_barplot, create_combined_barplot
+
+tables_paths = {}
+
 
 def process_file(file_path, ns):
     with open(file_path, 'r') as file:
@@ -17,6 +21,8 @@ def process_file(file_path, ns):
 
     namespace_names = {1: 'BP', 2: 'CC', 3: 'MF'}
     
+    colors = {'BP': 'skyblue', 'MF': 'lightcoral', 'CC': 'lightgreen'}
+
     payload = {'cutoff': '0.7', 'valueType': 'pvalue', 'speciesTaxon': '0', 'measure': 'SIMREL', 'goList': userData}
     r = requests.post("http://revigo.irb.hr/StartJob", data=payload)
     jobid = r.json()['jobid']
@@ -47,6 +53,9 @@ def process_file(file_path, ns):
     namespace_name = namespace_names[ns]
     
     output_file_table = os.path.join(output_folder, f"{file_name}_{namespace_name}_table.tsv")
+
+    tables_paths[namespace_name] = output_file_table
+
     output_file_jTreeMap = os.path.join(output_folder, f"{file_name}_{namespace_name}_TreeMap.tsv")
     output_file_scatterplot = os.path.join(output_folder, f"{file_name}_{namespace_name}_scatterPlot.tsv")
     output_file_Rscript = os.path.join(output_folder, f"{file_name}_{namespace_name}_Rscript.R")
@@ -72,6 +81,8 @@ def process_file(file_path, ns):
 
     os.system(f"Rscript {output_file_Rscript}")
     print("Treemap created and saved.")
+
+    create_individual_barplot(output_file_table, f'{graphic_name} {namespace_name} Bar Plot', os.path.join(graphics_folder, f"{file_name}_{namespace_name}_barplot.png"), colors[namespace_name])
 
     with open(output_file_scatterplot, 'r') as tsv_file:
         scatterplot_data = pd.read_csv(tsv_file, sep='\t')
@@ -147,7 +158,6 @@ def create_treemap_from_csv(csv_file, output_file):
 
 def make_request(file_path):
     print(f"Starting processing for file: {file_path}")
-    # Procesar todos los namespaces en paralelo
     with ThreadPoolExecutor(max_workers=3) as executor:
         futures = [executor.submit(process_file, file_path, ns) for ns in [1, 2, 3]]
         for future in as_completed(futures):
@@ -172,6 +182,10 @@ def main():
 
     with ThreadPoolExecutor(max_workers=5) as executor:
         [executor.submit(make_request, file_path) for file_path in files_to_process]
+
+    create_combined_barplot(tables_paths, os.path.join(curr_dir, 'results_revigo'))
+
+    print("All files processed.")
 
 if __name__ == "__main__":
     main()
