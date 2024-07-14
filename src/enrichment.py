@@ -86,26 +86,4 @@ def enrichment_analysis():
 
     os.system("Rscript src/R_enrichment.R --candidates_ids data/aa.candidates.txt --universe_ids data/aa.universe.txt --output_folder output --annotation_df data/background.txt --pvalue_cutoff 0.01 --category_size 5")
 
-        
-
-    '''  cmd = [
-        "Rscript", "src/R_enrichment.R",
-        "--candidates_ids", "data/aa_candidates.txt",
-        "--universe_ids", "data/aa_universe.txt",
-        "--output_folder", "output",
-        "--annotation_df", "data/background.txt",
-        "--pvalue_cutoff", "0.01",
-        "--category_size", "5"
-    ]
-
-    try:
-        result = subprocess.run(cmd, text=True, check=True,shell=True)
-        print("Script ejecutado con éxito.")
-        print("Salida estándar:", result.stdout)
-        print("Errores:", result.stderr)
-    except subprocess.CalledProcessError as e:
-        print(f"Error al ejecutar el script de R: {e}")
-        print("Salida estándar:", e.stdout)
-        print("Errores:", e.stderr)
-'''
-enrichment_analysis()
+    
