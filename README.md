@@ -29,7 +29,7 @@ python3 src/main.py
 
 The pipeline includes:
    - **GO enrichment of the candidate transcripts using Biological process (BP), Cellular Components (CC), and Molecular Functions (MF) ontologies**
-   - **Grouping the enriched terms form 3 ontologies using the ReViGo API, obtaining 2D scatterplots and treemaps**
+   - **Grouping the enriched terms form 3 ontologies using the REVIGO API, obtaining 2D scatterplots and treemaps**
    - **3D representation of the enriched GO terms**
 
 Example outputs and data can be found in the `example` folder.
