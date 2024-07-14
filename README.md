@@ -17,3 +17,52 @@ This project provides an automated comprehensive pipeline for conducting Gene On
    - **GO terms**: GO terms from each annotated transcript.
    - **Evidence code**: Methodology used to determine the GO terms. By default, IEA (electronic).
    - **Transcript ID**: Annotated transcripts from the annotation procedure.
+
+All input files must be placed in their respective subfolders within the data folder. The universe and candidates files must have the same base name. Candidates files should be named with the extension `*.candidates.txt`, universe files with `*.universe.txt`, and eggNOG-mapper annotation files with `*.annotation*`.
+
+
+## Installation
+
+Via Git Clone:
+```bash
+
+git clone https://github.com/RubenVG02/NonModelGOToolkit.git
+
+```
+
+Via Lastest Release:
+
+```bash
+
+https://github.com/RubenVG02/NonModelGOToolkit/releases
+
+```
+
+To use this project, you need to have Python 3.7 or higher installed. Then, you need to install the following libraries:
+
+
+To install the required libraries, use:
+
+```bash
+pip install requirements.txt
+```
+
+
+## Authors
+
+- [@RubenVG02](https://www.github.com/RubenVG02)
+
+## Features
+
+- Automated GO enrichment pipeline
+- 2D and 3D visualization of the results
+- Fast and easy to use
+
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+
+
