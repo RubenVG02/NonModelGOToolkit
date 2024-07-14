@@ -1,5 +1,5 @@
 {
   "pvalue_cutoff": 0.01,
   "category_size": 5,
-  "output_folder": "output"
+  "output_folder": "examples/output"
 }

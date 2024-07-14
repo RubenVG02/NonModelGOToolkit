@@ -1,0 +1,11 @@
+# WARNING - This exported Revigo data is only useful for the specific purpose of constructing a TreeMap visualization.
+# Do not use this table as a general list of non-redundant GO categories, as it sets an extremely permissive 
+# threshold to detect redundancies (c=0.10) and fill the 'representative' column, while normally c>=0.4 is recommended.
+# To export a reduced-redundancy set of GO terms, go to the Scatterplot or Table tab, and export from there.
+TermID	Name	Frequency	Value	Uniqueness	Dispensability	Representative
+"GO:0005737"	"cytoplasm"	43.076660800468886	-2.421761796101055	0.8888902750046057	0.08859538	null
+"GO:0022625"	"cytosolic large ribosomal subunit"	1.014469728138433	-12.113076227493746	0.33018935796424503	0	null
+"GO:0000322"	"storage vacuole"	0.2661182824452727	-3.996407586417781	0.8555104067946925	0.12655094	"cytosolic large ribosomal subunit"
+"GO:0005852"	"eukaryotic translation initiation factor 3 complex"	0.08561256229366826	-2.840897860731786	0.6744908630409379	0.22333355	"cytosolic large ribosomal subunit"
+"GO:0030687"	"preribosome, large subunit precursor"	0.1323907395608457	-4.0721192326205085	0.4963716015302116	0.53614612	"cytosolic large ribosomal subunit"
+"GO:1990904"	"ribonucleoprotein complex"	4.315842197772249	-3.3638802864553807	0.6093677891596602	0.33654169	"cytosolic large ribosomal subunit"

@@ -24,10 +24,10 @@ if (!require("optparse")) install.packages("optparse")
 library(optparse)
 
 option_list <- list(
-  make_option(c("--candidates_ids"), type = "character", default = "data/aa.candidates.txt", help = "Path to the genes file. This file should contain gene identifiers in text format."),
-  make_option(c("--universe_ids"), type = "character", default = "data/aa.universe.txt", help = "Path to the universe file. This file should contain universe gene identifiers in text format."),
+  make_option(c("--candidates_ids"), type = "character", default = "data/candidates/aa.candidates.txt", help = "Path to the genes file. This file should contain gene identifiers in text format."),
+  make_option(c("--universe_ids"), type = "character", default = "data/universe/aa.universe.txt", help = "Path to the universe file. This file should contain universe gene identifiers in text format."),
   make_option(c("--output_folder"), type = "character", default = "output", help = "Path to the output folder where results will be saved."),
-  make_option(c("--annotation_df"), type = "character", default = "data/background.txt", help = "Path to the annotation dataframe. This file must contain GO terms, evidence (e.g., IEA) and transcripts or genes IDs."),
+  make_option(c("--annotation_df"), type = "character", default = "data/annotation/background.txt", help = "Path to the annotation dataframe. This file must contain GO terms, evidence (e.g., IEA) and transcripts or genes IDs."),
   make_option(c("--pvalue_cutoff"), type = "character", default = "0.01", help = "P-value cutoff for the analysis. Default is 0.01. Multiple cutoffs can be provided separated by commas."),
   make_option(c("--category_size"), type = "numeric", default = 5, help = "Category size for the summary. Default is 5.")
 )
@@ -106,6 +106,7 @@ process_files <- function(candidates_ids, universe_ids, output_folder, gsc, pval
   })
 }
 
+print("Performing GSC object generation from Background file...")
 gsc <- opt$annotation_df
 data <- read.table(gsc, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
 colnames(data) <- c("go", "evidence", "ids")

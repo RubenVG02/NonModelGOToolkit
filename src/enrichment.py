@@ -1,4 +1,3 @@
-import subprocess
 import os
 import pandas as pd
 from eggnog_to_gsc import process_eggnog
@@ -44,6 +43,7 @@ def select_files():
                 grouped_files[basename]['universe'].append(file)
 
             # Process the annotation file
+            print(f"Performing Background Filtering from {annotation_files[0]}...")
             process_eggnog(annotation_files[0], 'data/annotation/background.txt')
             background = pd.read_csv('data/annotation/background.txt', sep='\t', header=None, names=['GO', 'Evidence', 'Transcript'])
             
@@ -68,6 +68,7 @@ def select_files():
     annotation_file = filedialog.askopenfilename(title="Select annotation file", filetypes=[("Annotation files", "*.annotation")])
     if annotation_file:
         shutil.copy(annotation_file, 'data/annotation/') 
+        print(f"Performing Background Filtering from {annotation_file}...")
         process_eggnog(annotation_file, 'data/annotation/background.txt')
         background = pd.read_csv('data/annotation/background.txt', sep='\t', header=None, names=['GO', 'Evidence', 'Transcript'])
 
@@ -102,5 +103,7 @@ def enrichment_analysis():
             output_folder = os.path.join(parameters["output_folder"], group)
             os.makedirs(output_folder, exist_ok=True)
             print(f"Performing enrichment analysis for {group} with candidates {candidate_file} and universe {universe_file}...")
+            background = r"data/annotation/background.txt"
+
             os.system(f"Rscript src/R_enrichment.R --candidates_ids {candidate_file} --universe_ids {universe_file} --output_folder {output_folder} --annotation_df {background} --pvalue_cutoff {parameters['pvalue_cutoff']} --category_size {parameters['category_size']}")
 

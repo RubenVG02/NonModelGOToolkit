@@ -1,0 +1,72 @@
+# A treemap R script produced by the Revigo server at http://revigo.irb.hr/
+# If you found Revigo useful in your work, please cite the following reference:
+# Supek F et al. "REVIGO summarizes and visualizes long lists of Gene Ontology
+# terms" PLoS ONE 2011. doi:10.1371/journal.pone.0021800
+
+# author: Anton Kratz <anton.kratz@gmail.com>, RIKEN Omics Science Center, Functional Genomics Technology Team, Japan
+# created: Fri, Nov 02, 2012  7:25:52 PM
+# last change: Fri, Nov 09, 2012  3:20:01 PM
+
+# -----------------------------------------------------------------------------
+# If you don't have the treemap package installed, uncomment the following line:
+# install.packages( "treemap" );
+library(treemap) 								# treemap package by Martijn Tennekes
+
+# Set the working directory if necessary
+# setwd("C:/Users/username/workingdir");
+
+# --------------------------------------------------------------------------
+# Here is your data from Revigo. Scroll down for plot configuration options.
+
+revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative");
+revigo.data <- rbind(c("GO:0002181","cytoplasmic translation",0.3974763229665376,22.2495144239621,0.580417500723756,0,"cytoplasmic translation"),
+c("GO:0000096","sulfur amino acid metabolic process",0.6045711859846593,2.2541128739161547,0.6232127385198889,0.53210148,"cytoplasmic translation"),
+c("GO:0000460","maturation of 5.8S rRNA",0.1803006726670273,3.2794866582215425,0.5961881148444329,0.65659493,"cytoplasmic translation"),
+c("GO:0000470","maturation of LSU-rRNA",0.20518715412917427,3.922886831195291,0.5921696185755898,0.59099573,"cytoplasmic translation"),
+c("GO:0002182","cytoplasmic translational elongation",0.009651922492400466,3.0268003580928236,0.6608289719738225,0.69099207,"cytoplasmic translation"),
+c("GO:0002183","cytoplasmic translational initiation",0.1243017760819051,3.5055139873691683,0.5989201892557875,0.48926856,"cytoplasmic translation"),
+c("GO:0006537","glutamate biosynthetic process",0.08242091117106017,2.1152806777703783,0.5769167337953903,0.67009017,"cytoplasmic translation"),
+c("GO:0009067","aspartate family amino acid biosynthetic process",0.7567688912721283,3.5055139873691683,0.49110425925572443,0.63775023,"cytoplasmic translation"),
+c("GO:0010467","gene expression",12.663260691525247,2.3263822734329542,0.5668346744466087,0.45657675,"cytoplasmic translation"),
+c("GO:0016053","organic acid biosynthetic process",4.4026914173902405,3.1869972932108914,0.498880589794459,0.21692113,"cytoplasmic translation"),
+c("GO:0016072","rRNA metabolic process",1.653535024007062,4.077529044837683,0.6509958545435159,0.21802309,"cytoplasmic translation"),
+c("GO:0042273","ribosomal large subunit biogenesis",0.3272829877619735,2.924208026340194,0.8914638945745725,0.63200998,"cytoplasmic translation"),
+c("GO:0043043","peptide biosynthetic process",4.592791896959665,13.773969815035858,0.5188172408277294,0.64900656,"cytoplasmic translation"),
+c("GO:0043603","amide metabolic process",6.707376287050344,11.747550569633349,0.7836221244810491,0.13247309,"cytoplasmic translation"),
+c("GO:0044237","cellular metabolic process",46.10331480933213,2.4174404971937933,0.8271563262130823,0.13458491,"cytoplasmic translation"),
+c("GO:0044271","cellular nitrogen compound biosynthetic process",12.957025677761646,4.182953402612982,0.5844507498260826,0.36321189,"cytoplasmic translation"),
+c("GO:1901564","organonitrogen compound metabolic process",27.31959408292786,3.2859366444593814,0.7142703174484127,0.27258733,"cytoplasmic translation"),
+c("GO:1901576","organic substance biosynthetic process",28.21764434528959,3.55381059144845,0.6043593845422406,0.53115188,"cytoplasmic translation"),
+c("GO:0006450","regulation of translational fidelity",0.29561600610151356,2.9163987279484807,1,-0,"regulation of translational fidelity"),
+c("GO:0006616","SRP-dependent cotranslational protein targeting to membrane, translocation",0.09292316902093718,2.2847539712701317,0.9855931345813477,0.008425,"SRP-dependent cotranslational protein targeting to membrane, translocation"),
+c("GO:0008152","metabolic process",57.597931274565454,2.4449763332997145,1,-0,"metabolic process"),
+c("GO:0098754","detoxification",0.9926322015147898,2.1668723485354233,1,-0,"detoxification"));
+
+stuff <- data.frame(revigo.data);
+names(stuff) <- revigo.names;
+
+stuff$value <- as.numeric( as.character(stuff$value) );
+stuff$frequency <- as.numeric( as.character(stuff$frequency) );
+stuff$uniqueness <- as.numeric( as.character(stuff$uniqueness) );
+stuff$dispensability <- as.numeric( as.character(stuff$dispensability) );
+
+# by default, outputs to a PDF file
+pdf( file="/Users/rubenvg/Desktop/NonModelGOToolkit-1/examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_BP_treemap.pdf", width=16, height=9 ) # width and height are in inches
+
+# check the tmPlot command documentation for all possible parameters - there are a lot more
+treemap(
+  stuff,
+  index = c("representative","description"),
+  vSize = "value",
+  type = "categorical",
+  vColor = "representative",
+  title = "aa.candidates_0.01_IDs_Pvalues BP TreeMap",
+  inflate.labels = FALSE,      # set this to TRUE for space-filling group labels - good for posters
+  lowerbound.cex.labels = 0,   # try to draw as many labels as possible (still, some small squares may not get a label)
+  bg.labels = "#CCCCCCAA",   # define background color of group labels
+								 # "#CCCCCC00" is fully transparent, "#CCCCCCAA" is semi-transparent grey, NA is opaque
+  position.legend = "none", fontsize.labels = c(12,15), align.labels = list(c("left","top"),c("center","center")),
+)
+
+dev.off()
+
