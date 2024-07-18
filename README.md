@@ -32,7 +32,7 @@ The pipeline includes:
    - **Grouping the enriched terms form 3 ontologies using the REVIGO API, obtaining 2D scatterplots and treemaps**
    - **3D representation of the enriched GO terms**
 
-Example outputs and data can be found in the `example` folder.
+Example outputs and data can be found in the `examples` folder.
 
 
 ## Installation
