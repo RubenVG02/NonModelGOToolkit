@@ -48,7 +48,7 @@ Via Lastest Release:
 https://github.com/RubenVG02/NonModelGOToolkit/releases
 ```
 
-To use this project, you need to have Python 3.7 or higher installed. Then, you need to install the following libraries:
+To use this project, you need to have Python 3.7 or higher installed.
 
 
 To install the required libraries, use:
