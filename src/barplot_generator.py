@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+import plotly.io as pio
 
 def wrap_labels(label, max_words=4):
     words = label.split()
@@ -11,6 +13,7 @@ def wrap_labels(label, max_words=4):
 def create_individual_barplot(df, title, filename, color):
     df['WrappedName'] = df['Name'].apply(wrap_labels)
     df_sorted = df.sort_values(by='Value', key=abs)
+
     plt.figure(figsize=(14, 12))
     bars = plt.barh(df_sorted['WrappedName'], abs(df_sorted['Value']), color=color, height=0.6)
     for bar in bars:
@@ -30,6 +33,55 @@ def create_individual_barplot(df, title, filename, color):
     plt.savefig(filename)
     plt.close()
 
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        y=df_sorted['WrappedName'],
+        x=abs(df_sorted['Value']),
+        orientation='h',
+        marker=dict(color=color),
+        text=abs(df_sorted['Value']),
+        textposition='outside',
+        hoverinfo='text',
+        hovertemplate='<b>%{text:.2f}</b><br>GO Term: %{customdata}<extra></extra>',
+        customdata=df_sorted['Name']
+    ))
+
+    fig.update_layout(
+        title=title,
+        xaxis_title='Value',
+        yaxis_title='GO Terms',
+        yaxis=dict(tickfont=dict(size=10)),
+        xaxis=dict(tickfont=dict(size=10)),
+        template="plotly_white",
+        hovermode="closest",
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=14,
+            font_family="Arial",
+        ),
+        barmode='overlay'
+    )
+
+    # Hide other bars on hover (TODO: fix hovertemplate)
+    fig.update_traces(
+        marker=dict(opacity=0.3),
+        selector=dict(type='bar')
+    )
+
+    # Make hovered bar full opacity (TODO: fix hovertemplate)
+    fig.update_traces(
+        marker=dict(opacity=1),
+        hoverinfo='text+name',
+        hovertemplate='<b>%{customdata}</b><br>Value: %{x:.2f}<extra></extra>'
+    )
+
+    # Save as interactive HTML
+    interactive_filename = filename.replace('.png', '.html')
+    pio.write_html(fig, file=interactive_filename)
+
+    return interactive_filename
+
 def create_combined_barplot(dataframes, output_folder):
     colors = {'BP': 'skyblue', 'MF': 'lightcoral', 'CC': 'lightgreen'}
     combined_df = pd.concat([
@@ -44,6 +96,7 @@ def create_combined_barplot(dataframes, output_folder):
     combined_df['WrappedName'] = combined_df['Name'].apply(wrap_labels)
     combined_df_sorted = combined_df.sort_values(by=['OntologyOrder', 'Value'], key=abs)
 
+    # Static plot with matplotlib
     plt.figure(figsize=(14, 12))
     bars = plt.barh(combined_df_sorted['WrappedName'], abs(combined_df_sorted['Value']),
                     color=combined_df_sorted['Ontology'].map(colors), height=0.6)
@@ -69,13 +122,60 @@ def create_combined_barplot(dataframes, output_folder):
     plt.savefig(os.path.join(output_folder, 'combined_barplot.png'))
     plt.close()
 
+    # Interactive plot with plotly
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        y=combined_df_sorted['WrappedName'],
+        x=abs(combined_df_sorted['Value']),
+        orientation='h',
+        marker=dict(color=combined_df_sorted['Ontology'].map(colors)),
+        text=abs(combined_df_sorted['Value']),
+        textposition='outside',
+        hoverinfo='text',
+        hovertemplate='<b>%{text:.2f}</b><br>GO Term: %{customdata}<extra></extra>',
+        customdata=combined_df_sorted['Name']
+    ))
+
+    fig.update_layout(
+        title='GO Terms Bar Plot - Combined',
+        xaxis_title='Value',
+        yaxis_title='GO Terms',
+        yaxis=dict(tickfont=dict(size=10)),
+        xaxis=dict(tickfont=dict(size=10)),
+        template="plotly_white",
+        hovermode="closest",
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=14,
+            font_family="Arial",
+        )
+    )
+
+    # Hide other bars on hover (TODO: fix hovertemplate)
+    fig.update_traces(
+        marker=dict(opacity=0.3),
+        selector=dict(type='bar')
+    )
+
+    # Make hovered bar full opacity (TODO: fix hovertemplate)
+    fig.update_traces(
+        marker=dict(opacity=1),
+        hoverinfo='text+name',
+        hovertemplate='<b>%{customdata}</b><br>Value: %{x:.2f}<extra></extra>'
+    )
+
+    interactive_filename = os.path.join(output_folder, 'combined_barplot.html')
+    pio.write_html(fig, file=interactive_filename)
+
+    return interactive_filename
+
 def process_and_plot(bp_path, mf_path, cc_path, output_folder):
     os.makedirs(output_folder, exist_ok=True)
 
     dataframes = {'BP': pd.DataFrame(), 'MF': pd.DataFrame(), 'CC': pd.DataFrame()}
     colors = {'BP': 'skyblue', 'MF': 'lightcoral', 'CC': 'lightgreen'}
 
-    # Process and create individual bar plots
     for ontology, path in {'BP': bp_path, 'MF': mf_path, 'CC': cc_path}.items():
         df = pd.read_csv(path, sep='\t')
         if all(col in df.columns for col in ['Name', 'Value']):
@@ -85,13 +185,12 @@ def process_and_plot(bp_path, mf_path, cc_path, output_folder):
         else:
             raise ValueError(f"The file {path} does not contain the required columns.")
 
-    # Create combined bar plot
     create_combined_barplot(dataframes, output_folder)
 
 # Example usage
-bp_path = 'examples/output/aa/aa.candidates/results_revigo/example_BP_table.tsv'
-mf_path = 'examples/output/aa/aa.candidates/results_revigo/example_MF_table.tsv'
-cc_path = 'examples/output/aa/aa.candidates/results_revigo/example_CC_table.tsv'
-output_folder = 'testo'
+bp_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_BP_table.tsv'
+mf_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_MF_table.tsv'
+cc_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_CC_table.tsv'
+output_folder = 'examples/output/ccc'
 
-process_and_plot(bp_path, mf_path, cc_path, output_folder)
+#process_and_plot(bp_path, mf_path, cc_path, output_folder)

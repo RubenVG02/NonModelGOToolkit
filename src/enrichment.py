@@ -82,16 +82,16 @@ def enrichment_analysis():
 
     Args:
 
-    - pvalue: P-value threshold for the enrichment analysis
-    - category_size: Minimum number of genes in a category to be considered in the analysis
-    - output_dir: Directory to save the results of the analysis
+    - pvalue: P-value threshold for the enrichment analysis. By default, 0.01.
+    - category_size: Minimum number of genes in a category to be considered in the analysis. By default, 5.
+    - output_dir: Directory to save the results of the analysis.
 
     Returns:
 
-    - results: DataFrame with the results of the enrichment analysis
+    - results: DataFrame with the results of the enrichment analysis.
     '''
     # Assuming select_files() returns the file paths for candidates, universe, and background
-    grouped_files, background =select_files()
+    grouped_files, background = select_files()
 
     parameters = {}
     with open('params.json', 'r') as file:
@@ -100,7 +100,7 @@ def enrichment_analysis():
         
     for group, files in grouped_files.items():
         for candidate_file, universe_file in zip(files['candidates'], files['universe']):
-            output_folder = os.path.join(parameters["output_folder"], group)
+            output_folder = os.path.join(parameters["output_folder"], group) #The output folder will be named after the group name. E.g., the example candidates filename is 'aa.candidates.txt', so the output folder will be 'aa'
             os.makedirs(output_folder, exist_ok=True)
             print(f"Performing enrichment analysis for {group} with candidates {candidate_file} and universe {universe_file}...")
             background = r"data/annotation/background.txt"
