@@ -32,7 +32,7 @@ The pipeline includes:
    - **Grouping the enriched terms form 3 ontologies using the REVIGO API, obtaining 2D scatterplots and treemaps**
    - **3D representation of the enriched GO terms**
 
-Example outputs and data can be found in the `example` folder.
+Example outputs and data can be found in the `examples` folder.
 
 
 ## Installation
@@ -48,7 +48,7 @@ Via Lastest Release:
 https://github.com/RubenVG02/NonModelGOToolkit/releases
 ```
 
-To use this project, you need to have Python 3.7 or higher installed. Then, you need to install the following libraries:
+To use this project, you need to have Python 3.7 or higher installed.
 
 
 To install the required libraries, use:
