@@ -66,6 +66,7 @@ pip install requirements.txt
 
 - Automated GO enrichment pipeline
 - 2D and 3D visualization of the results
+- Interactive visualization of the outputs
 - Fast and easy to use
 
 ## License
