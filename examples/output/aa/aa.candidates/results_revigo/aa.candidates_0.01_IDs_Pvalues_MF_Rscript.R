@@ -19,17 +19,17 @@ library(treemap) 								# treemap package by Martijn Tennekes
 # Here is your data from Revigo. Scroll down for plot configuration options.
 
 revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative");
-revigo.data <- rbind(c("GO:0003735","structural constituent of ribosome",2.128498588986873,2.3063453870079487,1,-0,"structural constituent of ribosome"),
-c("GO:0003955","NAD(P)H dehydrogenase (quinone) activity",0.32041890398799755,5.946673441464065,0.7400056158989043,0.03782958,"NAD(P)H dehydrogenase (quinone) activity"),
-c("GO:0016765","transferase activity, transferring alkyl or aryl (other than methyl) groups",0.9927517685284755,14.124351859826227,0.9772580570277989,0,"transferase activity, transferring alkyl or aryl (other than methyl) groups"),
-c("GO:0016846","carbon-sulfur lyase activity",0.2130833609374284,2.6890263909525376,0.9794484639599235,0.03639583,"carbon-sulfur lyase activity"),
-c("GO:0019843","rRNA binding",1.1153325776412018,6.900720816804705,0.835202566885766,0.05274861,"rRNA binding"),
-c("GO:0003723","RNA binding",6.099813894661886,2.125599608641549,0.8072398915118998,0.3443017,"rRNA binding"),
-c("GO:0003743","translation initiation factor activity",0.37315089336372126,2.506156090153474,0.7572032240364351,0.24893209,"rRNA binding"),
-c("GO:0051540","metal cluster binding",1.944298077570841,12.725269847452662,0.8954228081211022,-0,"metal cluster binding"),
-c("GO:0051539","4 iron, 4 sulfur cluster binding",1.062682635515558,2.054019641899559,0.9024681871410898,0.15455964,"metal cluster binding"),
-c("GO:1901363","heterocyclic compound binding",20.072278748835316,2.125599608641549,0.8620729997677683,0.23645146,"metal cluster binding"),
-c("GO:0097159","organic cyclic compound binding",39.22969739688024,2.0791220405935267,0.8960665321996599,0.09126372,"organic cyclic compound binding"));
+revigo.data <- rbind(c("GO:0003735","structural constituent of ribosome",2.1449279465042137,2.3063453870079487,1,-0,"structural constituent of ribosome"),
+c("GO:0003955","NAD(P)H dehydrogenase (quinone) activity",0.043530454831469736,5.946673441464065,0.773019403110879,0.0306045,"NAD(P)H dehydrogenase (quinone) activity"),
+c("GO:0016765","transferase activity, transferring alkyl or aryl (other than methyl) groups",0.9423254583845189,14.124351859826227,0.9793855026034232,0,"transferase activity, transferring alkyl or aryl (other than methyl) groups"),
+c("GO:0016846","carbon-sulfur lyase activity",0.16052495238991618,2.6890263909525376,0.9814590528802952,0.03420288,"carbon-sulfur lyase activity"),
+c("GO:0019843","rRNA binding",1.0954409716541849,6.900720816804705,0.8327836646557257,0.05469995,"rRNA binding"),
+c("GO:0003723","RNA binding",5.722212435765044,2.125599608641549,0.8052553378367568,0.34544739,"rRNA binding"),
+c("GO:0003743","translation initiation factor activity",0.385996278395293,2.506156090153474,0.7534591290723279,0.25296266,"rRNA binding"),
+c("GO:0051540","metal cluster binding",1.9773485526914547,12.725269847452662,0.895217867426396,-0,"metal cluster binding"),
+c("GO:0051539","4 iron, 4 sulfur cluster binding",1.0717380484734336,2.054019641899559,0.902421624405444,0.1503654,"metal cluster binding"),
+c("GO:1901363","heterocyclic compound binding",20.31779257334349,2.125599608641549,0.8612069837988088,0.230554,"metal cluster binding"),
+c("GO:0097159","organic cyclic compound binding",39.169633533373776,2.0791220405935267,0.8924849646911944,0.09495105,"organic cyclic compound binding"));
 
 stuff <- data.frame(revigo.data);
 names(stuff) <- revigo.names;

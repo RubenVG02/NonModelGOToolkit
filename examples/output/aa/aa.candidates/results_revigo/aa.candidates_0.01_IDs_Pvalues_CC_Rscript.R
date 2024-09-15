@@ -19,12 +19,12 @@ library(treemap) 								# treemap package by Martijn Tennekes
 # Here is your data from Revigo. Scroll down for plot configuration options.
 
 revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative");
-revigo.data <- rbind(c("GO:0005737","cytoplasm",43.076660800468886,2.421761796101055,0.8888902750046057,0.08859538,"cytoplasm"),
-c("GO:0022625","cytosolic large ribosomal subunit",1.014469728138433,12.113076227493746,0.33018935796424503,0,"cytosolic large ribosomal subunit"),
-c("GO:0000322","storage vacuole",0.2661182824452727,3.996407586417781,0.8555104067946925,0.12655094,"cytosolic large ribosomal subunit"),
-c("GO:0005852","eukaryotic translation initiation factor 3 complex",0.08561256229366826,2.840897860731786,0.6744908630409379,0.22333355,"cytosolic large ribosomal subunit"),
-c("GO:0030687","preribosome, large subunit precursor",0.1323907395608457,4.0721192326205085,0.4963716015302116,0.53614612,"cytosolic large ribosomal subunit"),
-c("GO:1990904","ribonucleoprotein complex",4.315842197772249,3.3638802864553807,0.6093677891596602,0.33654169,"cytosolic large ribosomal subunit"));
+revigo.data <- rbind(c("GO:0022625","cytosolic large ribosomal subunit",0.6422496099261846,12.113076227493746,0.34085524602774525,0,"cytosolic large ribosomal subunit"),
+c("GO:0000322","storage vacuole",0.1778201926099983,3.996407586417781,0.8428127851699823,0.12770953,"cytosolic large ribosomal subunit"),
+c("GO:0005737","cytoplasm",36.38509412593251,2.421761796101055,0.8619152465722402,0.10701902,"cytosolic large ribosomal subunit"),
+c("GO:0005852","eukaryotic translation initiation factor 3 complex",0.09985555503264143,2.840897860731786,0.6456414810665522,0.23478132,"cytosolic large ribosomal subunit"),
+c("GO:0030687","preribosome, large subunit precursor",0.10178817133005495,4.0721192326205085,0.5094292084898253,0.50042336,"cytosolic large ribosomal subunit"),
+c("GO:1990904","ribonucleoprotein complex",4.396406893146647,3.3638802864553807,0.592507283898729,0.34351463,"cytosolic large ribosomal subunit"));
 
 stuff <- data.frame(revigo.data);
 names(stuff) <- revigo.names;
