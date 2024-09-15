@@ -14,6 +14,7 @@ def create_individual_barplot(df, title, filename, color):
     df['WrappedName'] = df['Name'].apply(wrap_labels)
     df_sorted = df.sort_values(by='Value', key=abs)
 
+    # Create the static plot with matplotlib
     plt.figure(figsize=(14, 12))
     bars = plt.barh(df_sorted['WrappedName'], abs(df_sorted['Value']), color=color, height=0.6)
     for bar in bars:
@@ -33,6 +34,7 @@ def create_individual_barplot(df, title, filename, color):
     plt.savefig(filename)
     plt.close()
 
+    # Create an interactive plot with plotly
     fig = go.Figure()
 
     fig.add_trace(go.Bar(
@@ -63,13 +65,13 @@ def create_individual_barplot(df, title, filename, color):
         barmode='overlay'
     )
 
-    # Hide other bars on hover (TODO: fix hovertemplate)
+    # Hide other bars on hover
     fig.update_traces(
         marker=dict(opacity=0.3),
         selector=dict(type='bar')
     )
 
-    # Make hovered bar full opacity (TODO: fix hovertemplate)
+    # Make hovered bar full opacity
     fig.update_traces(
         marker=dict(opacity=1),
         hoverinfo='text+name',
@@ -152,19 +154,20 @@ def create_combined_barplot(dataframes, output_folder):
         )
     )
 
-    # Hide other bars on hover (TODO: fix hovertemplate)
+    # Hide other bars on hover
     fig.update_traces(
         marker=dict(opacity=0.3),
         selector=dict(type='bar')
     )
 
-    # Make hovered bar full opacity (TODO: fix hovertemplate)
+    # Make hovered bar full opacity
     fig.update_traces(
         marker=dict(opacity=1),
         hoverinfo='text+name',
         hovertemplate='<b>%{customdata}</b><br>Value: %{x:.2f}<extra></extra>'
     )
 
+    # Save as interactive HTML
     interactive_filename = os.path.join(output_folder, 'combined_barplot.html')
     pio.write_html(fig, file=interactive_filename)
 
@@ -176,6 +179,7 @@ def process_and_plot(bp_path, mf_path, cc_path, output_folder):
     dataframes = {'BP': pd.DataFrame(), 'MF': pd.DataFrame(), 'CC': pd.DataFrame()}
     colors = {'BP': 'skyblue', 'MF': 'lightcoral', 'CC': 'lightgreen'}
 
+    # Process and create individual bar plots
     for ontology, path in {'BP': bp_path, 'MF': mf_path, 'CC': cc_path}.items():
         df = pd.read_csv(path, sep='\t')
         if all(col in df.columns for col in ['Name', 'Value']):
@@ -185,14 +189,13 @@ def process_and_plot(bp_path, mf_path, cc_path, output_folder):
         else:
             raise ValueError(f"The file {path} does not contain the required columns.")
 
+    # Create combined bar plot
     create_combined_barplot(dataframes, output_folder)
 
 # Example usage
-
 bp_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_BP_table.tsv'
 mf_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_MF_table.tsv'
 cc_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_CC_table.tsv'
 output_folder = 'examples/output/ccc'
 
-
-#process_and_plot(bp_path, mf_path, cc_path, output_folder)
+process_and_plot(bp_path, mf_path, cc_path, output_folder)
