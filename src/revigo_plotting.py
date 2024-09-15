@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import csv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from barplot_generator import create_individual_barplot, create_combined_barplot
+from barplot_generator import process_and_plot
 
 tables_paths = {}
 
@@ -185,7 +186,9 @@ def main():
 
     file_dir = os.path.dirname(os.path.abspath(file_path))
 
-    create_combined_barplot(tables_paths, os.path.join(file_dir, 'results_revigo'))
+    #create_combined_barplot(tables_paths, os.path.join(file_dir, 'results_revigo'))
+
+    process_and_plot(tables_paths['BP'], tables_paths['MF'], tables_paths['CC'], os.path.join(file_dir, 'results_revigo'))
 
     print("All files processed.")
 

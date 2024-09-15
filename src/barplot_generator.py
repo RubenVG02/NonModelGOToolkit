@@ -198,4 +198,4 @@ mf_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_ID
 cc_path = 'examples/output/aa/aa.candidates/results_revigo/aa.candidates_0.01_IDs_Pvalues_CC_table.tsv'
 output_folder = 'examples/output/ccc'
 
-process_and_plot(bp_path, mf_path, cc_path, output_folder)
+#process_and_plot(bp_path, mf_path, cc_path, output_folder)
