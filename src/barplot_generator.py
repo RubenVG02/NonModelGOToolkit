@@ -5,13 +5,32 @@ import plotly.graph_objs as go
 import plotly.io as pio
 
 def wrap_labels(label, max_words=4):
+    '''
+    Function to wrap the labels of the GO terms in the bar plot.
+
+    Args:
+    - label: The label to be wrapped
+    - max_words: The maximum number of words in each line. By default, 4.
+    '''
+
+
     words = label.split()
     if len(words) > max_words:
         label = "\n".join([" ".join(words[i:i+max_words]) for i in range(0, len(words), max_words)])
     return label
 
 def create_individual_barplot(df, title, filename, color):
-    df['WrappedName'] = df['Name'].apply(wrap_labels)
+    '''
+    Function to create a bar plot for the GO terms individually.
+
+    Args:
+    - df: The dataframe containing the GO terms and their corresponding values.
+    - title: The title of the plot.
+    - filename: The name of the file to save the plot.
+    - color: The color of the bars in the plot.
+    '''
+
+    df['WrappedName'] = df['Name'].apply(wrap_labels) # Due to space constraints, we wrap the labels in order to not overlap the plot.
     df_sorted = df.sort_values(by='Value', key=abs)
 
     # Create the static plot with matplotlib
@@ -19,10 +38,9 @@ def create_individual_barplot(df, title, filename, color):
     bars = plt.barh(df_sorted['WrappedName'], abs(df_sorted['Value']), color=color, height=0.6)
     for bar in bars:
         width = bar.get_width()
-        plt.text(width + 0.5 if width > 0 else width - 0.5, 
-                 bar.get_y() + bar.get_height() / 2, 
+        plt.text(width + 0.5 if width > 0 else width - 0.5, # To place the numeric value next to the bar
+                 bar.get_y() + bar.get_height() / 2, # To center the numeric value vertically
                  f'{width:.2f}', 
-                 va='center', 
                  ha='right' if width > 0 else 'left', 
                  fontsize=8)
     plt.xlabel('Value')
@@ -45,7 +63,7 @@ def create_individual_barplot(df, title, filename, color):
         text=abs(df_sorted['Value']),
         textposition='outside',
         hoverinfo='text',
-        hovertemplate='<b>%{text:.2f}</b><br>GO Term: %{customdata}<extra></extra>',
+        hovertemplate='<b>%{text:.2f}</b><br>GO Term: %{customdata}<extra></extra>', # To make the hover text more informative in the HTML interactive plot
         customdata=df_sorted['Name']
     ))
 
@@ -98,7 +116,6 @@ def create_combined_barplot(dataframes, output_folder):
     combined_df['WrappedName'] = combined_df['Name'].apply(wrap_labels)
     combined_df_sorted = combined_df.sort_values(by=['OntologyOrder', 'Value'], key=abs)
 
-    # Static plot with matplotlib
     plt.figure(figsize=(14, 12))
     bars = plt.barh(combined_df_sorted['WrappedName'], abs(combined_df_sorted['Value']),
                     color=combined_df_sorted['Ontology'].map(colors), height=0.6)
@@ -174,6 +191,17 @@ def create_combined_barplot(dataframes, output_folder):
     return interactive_filename
 
 def process_and_plot(bp_path, mf_path, cc_path, output_folder):
+    '''
+    Function to process the data and create the bar plots for the GO terms.
+
+    Args:
+    - bp_path: The path to the file containing the Biological Process GO terms.
+    - mf_path: The path to the file containing the Molecular Function GO terms.
+    - cc_path: The path to the file containing the Cellular Component GO terms.
+    - output_folder: The folder where the plots will be saved.
+    '''
+
+
     os.makedirs(output_folder, exist_ok=True)
 
     dataframes = {'BP': pd.DataFrame(), 'MF': pd.DataFrame(), 'CC': pd.DataFrame()}
@@ -189,7 +217,6 @@ def process_and_plot(bp_path, mf_path, cc_path, output_folder):
         else:
             raise ValueError(f"The file {path} does not contain the required columns.")
 
-    # Create combined bar plot
     create_combined_barplot(dataframes, output_folder)
 
 # Example usage
