@@ -51,7 +51,7 @@ generate_treemap <- function(file_path) {
   
   file_name <- tools::file_path_sans_ext(basename(file_path))
   title_name <- paste(strsplit(file_name, "_")[[1]][1:3], collapse="_")
-  ns <- (strsplit(file_name, "_")[[1]])[6]
+  ns <- (strsplit(file_name, "_")[[1]])[6] # To extract the namespace from the file name (CC, BP, MF)
   
   if (nrow(stuff) > 0) {
     treemap_plot <- treemap(
