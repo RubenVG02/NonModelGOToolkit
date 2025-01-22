@@ -4,7 +4,7 @@ import time
 import json
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('Agg') # To avoid the need of a display.
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import csv
@@ -164,7 +164,7 @@ def make_request(file_path):
         for future in as_completed(futures):
             future.result()  
 
-def main():
+def revigo_main():
     curr_dir = os.path.dirname(os.path.abspath(__file__))
     curr_dir = os.path.dirname(curr_dir)
 
@@ -181,7 +181,7 @@ def main():
                 file_path = os.path.join(root, file)
                 files_to_process.append(file_path)
 
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=config["workers"]) as executor:
         [executor.submit(make_request, file_path) for file_path in files_to_process]
 
     file_dir = os.path.dirname(os.path.abspath(file_path))
@@ -192,5 +192,3 @@ def main():
 
     print("All files processed.")
 
-if __name__ == "__main__":
-    main()
