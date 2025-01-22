@@ -104,6 +104,9 @@ def enrichment_analysis():
             os.makedirs(output_folder, exist_ok=True)
             print(f"Performing enrichment analysis for {group} with candidates {candidate_file} and universe {universe_file}...")
             background = r"data/annotation/background.txt"
-
-            os.system(f"Rscript src/R_enrichment.R --candidates_ids {candidate_file} --universe_ids {universe_file} --output_folder {output_folder} --annotation_df {background} --pvalue_cutoff {parameters['pvalue_cutoff']} --category_size {parameters['category_size']}")
+            try:
+                os.system(f"Rscript src/R_enrichment.R --candidates_ids {candidate_file} --universe_ids {universe_file} --output_folder {output_folder} --annotation_df {background} --pvalue_cutoff {parameters['pvalue_cutoff']} --category_size {parameters['category_size']}")
+            except Exception as e:
+                print(f"Error in enrichment analysis for {group}: {e}")
+                
 
