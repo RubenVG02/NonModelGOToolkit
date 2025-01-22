@@ -7,4 +7,5 @@ def main():
     revigo_main()
     os.system(f"Rscript src/3D_treemap.R")
 
-main()
+if __name__ == "__main__":
+    main()
